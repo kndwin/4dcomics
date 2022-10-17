@@ -1,0 +1,31 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Comic {
+  id               String    @id @default(cuid())
+  slug             String    @unique
+  shortDescription String
+  title            String
+  coverImage       String
+  createdAt        DateTime  @default(now())
+  chapter          Chapter[]
+}
+
+model Chapter {
+  id         String   @id @default(cuid())
+  title      String
+  ordinal    Int
+  coverImage String
+  comicId    String
+  createdAt  DateTime @default(now())
+  comic      Comic    @relation(fields: [comicId], references: [id], onDelete: Cascade)
+}
